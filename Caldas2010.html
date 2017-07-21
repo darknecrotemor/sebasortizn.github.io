@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../bootstrap_v3/docs-assets/ico/favicon.png">
+    <!-- <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css"> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    
+
+    <title>Webmap Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="webmap-template.css" rel="stylesheet">
+
+    <!-- Bootstrap-map-js -->
+    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.13/esri/css/esri.css">   
+    <link rel="stylesheet" type="text/css" href="../../src/css/bootstrapmap.css">   
+   
+    <style type="text/css">
+    
+      #mapDiv {
+        min-height: 250px; 
+        max-height: 600px; 
+        margin-bottom: 10px;
+      }
+
+      #mapLegendDiv {
+        height: 600px;  
+        overflow: scroll;  
+        margin-bottom: 10px;     
+      }
+
+      #mapTitle {
+        margin-left: 15px;
+      }
+
+      body > .container {
+        padding-bottom: 10px;
+      }
+
+      table {
+        border-collapse: ;
+        border-spacing: ;
+      }
+
+    </style>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../bootstrap_v3/docs-assets/js/html5shiv.js"></script>
+      <script src="../bootstrap_v3/docs-assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Webmap Template</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="/Caldas2010.html">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="page-header">
+            <h2>Web Maps</h2>
+            <p class="lead">Load an ArcGIS web map into the Bootstrap framework.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <h4 id="mapTitle"></h4>
+        <br>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-4">
+          <div id="mapLegendDiv"></div>
+        </div>
+        <div class="col-sm-8">
+          <!-- Bootstrap-map-js -->
+          <div id="mapDiv"></div>
+        </div>
+      </div>
+      <div class="row">
+      <div class="col-sm-12">
+      <table id="example" class="display" cellspacing="0" width="100%"></table>
+      </div>
+      </div>
+
+    </div><!-- /.container -->
+    <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+  <!-- <script src="jquery.csv.js"></script> -->
+    <script type="text/javascript">
+      var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+      var dojoConfig = {
+          //The location.pathname.replace() logic below may look confusing but all its doing is
+          // enabling us to load the api from a CDN and load local modules from the correct location.
+          packages: [{
+              name: "application",
+              location: package_path + '../../../src/js'
+          }]
+      };
+      $.ajax({
+   url:"Caldas2010Mort.csv",
+   dataType:"text",
+   success:function(data)
+   {
+    var employee_data = data.split(/\r?\n|\r/);
+    var table_data = '';
+    for(var count = 0; count<employee_data.length; count++)
+    {
+     var cell_data = employee_data[count].split(",");
+     if(count === 0)
+      {
+      table_data += '<thead>';
+      table_data += '<tr>';
+      for(var cell_count=0; cell_count<cell_data.length; cell_count++)
+      {
+        table_data += '<th>'+cell_data[cell_count]+'</th>';
+      }
+      table_data += '</tr>';
+      table_data += '</thead>';
+      }
+      else
+      {
+        table_data += '<body>';
+      table_data += '<tr>';
+      for(var cell_count=0; cell_count<cell_data.length; cell_count++)
+      {
+        table_data += '<td>'+cell_data[cell_count]+'</td>';
+      }
+      table_data += '</tr>';
+      table_data += '</body>';
+      }
+    }
+    // table_data += '</table>';
+    $('#example').html(table_data);
+    $('#example').DataTable({
+        "language": {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla",
+            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            // "oPaginate": {
+            //     "sFirst":    "Primero",
+            //     "sLast":     "Último",
+            //     "sNext":     "Siguiente",
+            //     "sPrevious": "Anterior"
+            // },
+            "paginate": {
+      "previous": "Página anterior",
+      "next": "Página siguiente"
+    },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            }
+        }
+    } 
+      );
+   }
+  });
+    
+    </script>
+    <script src="//js.arcgis.com/3.13compact"></script>
+    <script>
+      require(["esri/map",
+        "esri/dijit/Scalebar",
+        "esri/dijit/Legend",
+        "esri/arcgis/utils",
+        "dojo/dom",
+        "dojo/on",
+        "dojo/query",
+        "dojo/_base/json",
+        "application/bootstrapmap",
+        "dojo/domReady!"],
+      function (Map, Scalebar, Legend, esriUtils, dom, on, query, dojo, BootstrapMap) {
+        "use strict";
+
+        var map,
+          scalebar,
+          legend;
+
+        function loadWebmap() {
+          // Get new webmap and extract map and map parts
+          var mapDeferred = BootstrapMap.createWebMap("3ce1b8d9ceea4a2284c85ab133748add", "mapDiv",
+          {
+              slider: true,
+              nav: false,
+              smartNavigation: false,
+              scrollWheelZoom: false
+          });
+
+          mapDeferred.then(function (response) {
+              map = response.map;
+
+          // Add titles
+          dom.byId("mapTitle").innerHTML = response.itemInfo.item.title;
+          //dom.byId("mapSubTitle").innerHTML = response.itemInfo.item.snippet;
+          // Add scalebar and legend
+          var layers = esriUtils.getLegendLayers(response);
+          if (map.loaded) {
+            initMapParts(layers);
+          }
+          else{
+            on(map, "load", function () {
+              initMapParts(layers);
+            });
+          }
+
+          },function(error) {
+            alert("Sorry, couldn't load webmap!");
+            console.log("Error loading webmap: " + dojo.toJson(error));
+          });
+        }
+
+        function initMapParts(layers) {
+         //add scalebar
+          scalebar = new Scalebar({
+            map: map,
+            scalebarUnit: 'english'
+          });
+          //add legend
+          if (legend) {
+            legend.map = map;
+            legend.refresh(layers);
+          }
+          else {
+            legend = new Legend({
+                map:map,
+                layerInfos:layers
+              },"mapLegendDiv");
+            legend.startup();
+          }
+        }
+
+        // Load web map when page loads
+        loadWebmap();
+
+      });
+    </script>
+  <script>
+//       $(document).ready(function() {
+//     $('#example').DataTable();
+// } );
+    </script>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+  </body>
+</html>
